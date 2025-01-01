@@ -1,1 +1,4 @@
 
+[submodule "libraries/Stream_STM32"]
+	path = libraries/Stream_STM32
+	url = https://github.com/GitMasterNikanjam/Stream_STM32.git

@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../USB_DEVICE/App;../USB_DEVICE/Target;../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;..\..\..\..\USBCDC_STM32</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../USB_DEVICE/App;../USB_DEVICE/Target;../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;../../../../USB_CDC_Device_STM32</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1339,12 +1339,12 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Libraries/USBCDC</GroupName>
+          <GroupName>Libraries/USB_CDC_Device</GroupName>
           <Files>
             <File>
-              <FileName>USBCDC.cpp</FileName>
+              <FileName>USB_CDC_Device.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\..\USBCDC.cpp</FilePath>
+              <FilePath>..\..\..\USB_CDC_Device.cpp</FilePath>
             </File>
           </Files>
         </Group>
