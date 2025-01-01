@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include <string>
 #include "USB_CDC_Device.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +46,8 @@
 
 /* USER CODE BEGIN PV */
 USB_CDC_Device USB;
+uint16_t d;
+uint32_t i;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,7 +91,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  // MX_USB_DEVICE_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   USB.init();
   /* USER CODE END 2 */
@@ -97,9 +100,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    char message[] = "hello nik\n";
-    USB.CDC_Transmit_FS((uint8_t*) message, strlen(message));
-    HAL_Delay(100);
+    char message[] = "Hi mohammad!";
+    USB.print(message); USB.print(", ");
+    USB.print(1235); USB.print(", ");
+    USB.print(546354.35, 1); USB.print(", ");
+    USB.println("this is test."); 
+    USB.updateProccess();
+    i++;
+    // CDC_Transmit_FS((uint8_t*)message, strlen(message));
+    // HAL_Delay(100);
+    // char c = '\n';
+    // CDC_Transmit_FS((uint8_t*)&c, 1);
+    HAL_Delay(10);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
