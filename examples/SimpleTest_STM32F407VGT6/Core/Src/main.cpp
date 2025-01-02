@@ -48,6 +48,7 @@
 USB_CDC_Device USB;
 uint16_t d;
 uint32_t i;
+uint8_t data[20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,18 +101,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    char message[] = "Hi mohammad!";
-    USB.print(message); USB.print(", ");
-    USB.print(1235); USB.print(", ");
-    USB.print(546354.35, 1); USB.print(", ");
-    USB.println("this is test."); 
-    USB.updateProccess();
     i++;
-    // CDC_Transmit_FS((uint8_t*)message, strlen(message));
-    // HAL_Delay(100);
-    // char c = '\n';
-    // CDC_Transmit_FS((uint8_t*)&c, 1);
-    HAL_Delay(10);
+    char message[] = "Hi mohammad!";
+    USB.print(i/500);USB.print(", ");
+    USB.print(message);USB.print(", ");
+    USB.print(12);USB.print(", ");
+    USB.print(436.343);USB.print(", ");
+    USB.print("niky nike");USB.print(", ");
+    USB.println(-234.32423423);
+    // USB.flush();
+
+    HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

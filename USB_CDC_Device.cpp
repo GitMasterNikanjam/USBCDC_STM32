@@ -6,10 +6,11 @@
 
 uint8_t USB_CDC_Device::_USBTxBuffer[USB_TX_DATA_SIZE] = {0};
 uint8_t USB_CDC_Device::_USBRxBuffer[USB_RX_DATA_SIZE] = {0};
-size_t USB_CDC_Device::_USBTxPosition = 0;
-size_t USB_CDC_Device::_USBRxPosition = 0;
+size_t USB_CDC_Device::_USBTxDataLength = 0;
+size_t USB_CDC_Device::_USBRxDataLength = 0;
 USBD_HandleTypeDef USB_CDC_Device::_hUsbDeviceFS = {}; // Zero-initialize the structure
 volatile bool USB_CDC_Device::_isTransmitting = false;
+Stream USB_CDC_Device::_stream = {};
 
 // ##################################################################################################
 
@@ -32,6 +33,8 @@ USB_CDC_Device::USB_CDC_Device()
 
     _initState = false;
     _isTransmitting = false;
+
+
 }
 
 bool USB_CDC_Device::init(void)
@@ -69,18 +72,39 @@ bool USB_CDC_Device::init(void)
 
 size_t USB_CDC_Device::getTxBufferSize() 
 {
-    return USB_TX_DATA_SIZE;
+    return _stream.getTxBufferSize();
 }
 
 size_t USB_CDC_Device::getRxBufferSize() 
 {
-    return USB_RX_DATA_SIZE;
+    return _stream.getRxBufferSize();
+}
+
+void USB_CDC_Device::setTxBufferSize(size_t value)
+{
+  _streamTxBufferSize = value;
+
+  _stream.setTxBufferSize(_streamTxBufferSize);
+}
+
+void USB_CDC_Device::setRxBufferSize(size_t value)
+{
+  _streamRxBufferSize = value;
+
+  _stream.setRxBufferSize(_streamRxBufferSize);
 }
 
 uint16_t USB_CDC_Device::available() 
 {
-    return strlen((char*)_USBRxBuffer);
+    return _stream.availableRx();
 }
+
+uint16_t USB_CDC_Device::availableForWrite(void)
+{
+  return _stream.availableTx();
+}
+
+// ----------------------------------------------------------------------------------------------------
 
 uint16_t USB_CDC_Device::write(uint8_t data)
 {
@@ -89,28 +113,12 @@ uint16_t USB_CDC_Device::write(uint8_t data)
 
 uint16_t USB_CDC_Device::write(uint8_t* data, uint16_t length)
 {
-
   _stream.pushBackTxBuffer((char*)data, length);
 
-  // if (_USBTxPosition + length > USB_TX_DATA_SIZE) // Check buffer size
-  // {
-  //     return 0; // Not enough space
-  // }
-
-  // memcpy(&_UserTxBufferFS[_txPosition], data, length);
-  // _txPosition += length;
-
-  // // Attempt transmission immediately
-  // if(_transmitProcessQueue() == USBD_FAIL)
-  // {
-  //   return 0;
-  // }
+  _updateTransmitting();
 
   return length;
 }
-
-// ------------------------------------------------------------------------
-// print/println methods:
 
 uint16_t USB_CDC_Device::print(const char* data)
 {
@@ -217,23 +225,42 @@ uint16_t USB_CDC_Device::println(double data, uint8_t precision)
 
 // -------------------------------------------------------------------------
 
-void USB_CDC_Device::updateProccess(void)
+uint8_t USB_CDC_Device::_updateTransmitting(void)
 {
-  size_t len = 0;
-
-  if(_stream.availableTx() > USB_TX_DATA_SIZE)
-  {
-    len = USB_TX_DATA_SIZE;
-  }
+  uint8_t state;
 
   if(_isTransmitting == false)
   {
-    _stream.popFrontTxBuffer((char*)_USBTxBuffer, len);
-    _isTransmitting = true;
-    _CDC_Transmit_FS(_USBTxBuffer, len);
+    _USBTxDataLength = _stream.availableTx();
+    if(_USBTxDataLength > USB_TX_DATA_SIZE)
+    {
+      _USBTxDataLength = USB_TX_DATA_SIZE;
+    }
+    
+    _stream.popFrontTxBuffer((char*)_USBTxBuffer, _USBTxDataLength);
+    state = _CDC_Transmit_FS(_USBTxBuffer, _USBTxDataLength);
+    if(state == USBD_OK)
+    {
+      _isTransmitting = true;
+    }
   }
-  
+  else
+  {
+    state = USBD_BUSY;
+  }
+
+  return state;
 }
+
+void USB_CDC_Device::flush(void)
+{
+  while(availableForWrite() > 0)
+  {
+    _updateTransmitting();
+  }
+}
+
+// ----------------------------------------------------------------------------------------
 
 int8_t USB_CDC_Device::_CDC_Init_FS(void)
 {
@@ -319,27 +346,6 @@ int8_t USB_CDC_Device::_CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   return (USBD_OK);
 }
 
-uint8_t USB_CDC_Device::_transmitProcessQueue(void)
-{
-  uint8_t state = USBD_OK;
-
-  if (!_isTransmitting && (_USBTxPosition != 0))
-  {
-    state = _CDC_Transmit_FS(_USBTxBuffer, _USBTxPosition);
-    if (state == USBD_OK)
-    {
-        _isTransmitting = true;
-        // _txPosition = 0; // Reset the position after successful transmission
-    }
-  }
-  else
-  {
-    state = USBD_BUSY;
-  }
-
-  return state;
-}
-
 uint8_t USB_CDC_Device::_CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
@@ -356,12 +362,18 @@ uint8_t USB_CDC_Device::_CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 
 int8_t USB_CDC_Device::_CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 {
-  _isTransmitting = false;
   uint8_t result = USBD_OK;
 
   UNUSED(Buf);
   UNUSED(Len);
   UNUSED(epnum);
+
+  _isTransmitting = false;
+  
+  // if(availableForWrite() > 0)
+  // {
+  //   _updateTransmitting();
+  // }
 
   return result;
 }

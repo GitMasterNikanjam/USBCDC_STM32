@@ -53,184 +53,217 @@ class USB_CDC_Device
 {
     public:
 
-    /**
-     * @brief Constructor. Init some parameters and variables.
-     */
-    USB_CDC_Device();
+        /**
+         * @brief Constructor. Init some parameters and variables.
+         */
+        USB_CDC_Device();
 
-    /**
-     * @brief Init object. Check parameters validation.
-     * @note - Init USB device Library, add supported class and start the library
-     * @return true if successful.
-     */
-    bool init(void);
+        /**
+         * @brief Init object. Check parameters validation.
+         * @note - Init USB device Library, add supported class and start the library
+         * @return true if successful.
+         */
+        bool init(void);
 
-    /**
-     * @brief Return current TxBuffer size.
-     */
-    size_t getTxBufferSize();
+        /**
+         * @brief Return current TxBuffer size of stream object.
+         */
+        size_t getTxBufferSize();
 
-    /**
-     * @brief Return currect RxBuffer size.
-     */
-    size_t getRxBufferSize();
+        /**
+         * @brief Return currect RxBuffer size of stream object.
+         */
+        size_t getRxBufferSize();
 
-    /**
-     * @brief Get the number of bytes (characters) available for reading from the serial port. 
-     * This is data that’s already arrived and stored in the serial receive buffer
-     */
-    uint16_t available(void);
+        /**
+         * @brief Set current TxBuffer size of stream object.
+         */
+        void setTxBufferSize(size_t value);
 
-    /**
-     * @brief Writes binary data to the serial port.
-     * @return The number of bytes written, though reading that number is optional.
-     */
-    uint16_t write(uint8_t data);
+        /**
+         * @brief Set currect RxBuffer size of stream object.
+         */
+        void setRxBufferSize(size_t value);
 
-    /**
-     * @brief Writes binary data to the serial port.
-     * @return The number of bytes written, though reading that number is optional.
-     */
-    uint16_t write(uint8_t* data, uint16_t length);
+        /**
+         * @brief Get the number of bytes (characters) available for reading from the serial port. 
+         * This is data that’s already arrived and stored in the serial receive buffer
+         */
+        uint16_t available(void);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(const char* data);
+        /**
+         * @brief Get the number of bytes (charaters) available for send to the serial port.
+         */
+        static uint16_t availableForWrite(void);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(const std::string& data);
+        /// @brief Return transmitting state. A value of false means transmitting is finished.
+        bool isTransmitting(void) {return _isTransmitting;};
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(uint32_t data);
+        /**
+         * @brief Waits for the transmission of outgoing serial data to complete.
+         */
+        static void flush(void);
+        
+        // -----------------------------------------------------------------------------------------------------
+        // Write and Print functions:
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(int32_t data);
+        /**
+         * @brief Writes binary data to the serial port.
+         * @return The number of bytes written, though reading that number is optional.
+         */
+        uint16_t write(uint8_t data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(uint64_t data);
+        /**
+         * @brief Writes binary data to the serial port.
+         * @return The number of bytes written, though reading that number is optional.
+         */
+        uint16_t write(uint8_t* data, uint16_t length);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(int64_t data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(const char* data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t print(double data, uint8_t precision= 2);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(const std::string& data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(const char* data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(uint32_t data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(const std::string& data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(int32_t data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(uint32_t data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(uint64_t data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(int32_t data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(int64_t data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(uint64_t data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t print(double data, uint8_t precision= 2);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(int64_t data);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(const char* data);
 
-    /**
-     * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
-     * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
-     * defaulting to two decimal places.
-     * @note It sends newline character automatically end of data.
-     * @return number of characters that written.
-     * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
-     */
-    uint16_t println(double data, uint8_t precision= 2);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(const std::string& data);
 
-    void updateProccess(void);
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(uint32_t data);
+
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(int32_t data);
+
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(uint64_t data);
+
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(int64_t data);
+
+        /**
+         * @brief Prints data to the serial port as human-readable ASCII text. This command can take many forms. 
+         * Numbers are printed using an ASCII character for each digit. Floats are similarly printed as ASCII digits, 
+         * defaulting to two decimal places.
+         * @note It sends newline character automatically end of data.
+         * @return number of characters that written.
+         * @note Return value can be 0 or number of character of data. If any error for transmitting data occurred it returns 0.
+         */
+        uint16_t println(double data, uint8_t precision= 2);
+
+        // ------------------------------------------------------------------------------------------------------------
 
     private:
 
-        Stream _stream;
+        /// @brief Stream object for data TX/RX stream management.
+        static Stream _stream;
+
+        /// @brief The TX buffer size for stream object.
+        size_t _streamTxBufferSize;
+
+        /// @brief The RX buffer size for stream object.
+        size_t _streamRxBufferSize; 
 
         /// @brief Data to send over USB CDC are stored in this buffer
         static uint8_t _USBTxBuffer[USB_TX_DATA_SIZE];
@@ -240,15 +273,11 @@ class USB_CDC_Device
          */
         static uint8_t _USBRxBuffer[USB_RX_DATA_SIZE];
 
-        /// @brief The last character position + 1 in the _txBuffer.
-        static size_t _USBTxPosition;
+        /// @brief The data length need to transmit on the TX buffer.
+        static size_t _USBTxDataLength;
 
-        /// @brief The last character position in the _rxBuffer.
-        static size_t _USBRxPosition;
-
-        size_t _streamTxBufferSize;
-
-        size_t _streamRxBufferSize; 
+        /// @brief The data length need to recieved from RX buffer.
+        static size_t _USBRxDataLength;
 
         /**
          * @brief USB Device Handle for Full-Speed Communication.
@@ -284,9 +313,18 @@ class USB_CDC_Device
          * Sends data if not already transmitting and the buffer has data. 
          * Resets `_txPosition` after a successful send.
          * 
-         * @return USBD_STATE.
+         * @return USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
          */
-        static uint8_t _transmitProcessQueue(void);
+        static uint8_t _updateTransmitting(void);
+
+        /**
+         * @brief Check parameters validation.
+         * @return true if successful.
+         */
+        bool _checkParameters(void);
+
+        // -------------------------------------------------------------------------------
+        // USB Interface Functions for USBD_CDC_ItfTypeDef:
 
         /**
          * @brief  CDC_Transmit_FS
@@ -350,9 +388,5 @@ class USB_CDC_Device
          */
         static int8_t _CDC_TransmitCplt_FS(uint8_t *pbuf, uint32_t *Len, uint8_t epnum);
 
-        /**
-         * @brief Check parameters validation.
-         * @return true if successful.
-         */
-        bool _checkParameters(void);
+        // ------------------------------------------------------------------------------------
 };
